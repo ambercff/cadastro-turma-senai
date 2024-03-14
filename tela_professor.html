@@ -1,0 +1,182 @@
+<!Doctype HTML>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<title> Login </title>
+	<link rel="stylesheet" href="style.css">
+	<script src="https://kit.fontawesome.com/be07557a2e.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<header>
+		<nav class="navbar">
+			<h3> Olá, professor </h3>
+			<div class="logout-container">
+				<h3> Sair </h3>
+				<form action="logout" method="POST">
+					<button type="submit"><i class="fa-solid fa-right-from-bracket"></i></button>
+				</form>
+			</div>
+		</nav>
+	</header>
+
+	<div class="general-container">
+		<div class="table-container">
+			<div class="container-cadastro">
+				<a href="tela_turma"><button type="submit" class="btn-cadastro"> Cadastrar Turma </button></a>
+				<a href="tela_atividade"><button type="submit" class="btn-cadastro"> Cadastrar Atividade </button></a>
+			</div>
+
+			<table class="tabela-turmas">
+				<thead>
+					<th> ID </th>
+					<th> Nome </th>
+					<th> Ações </th>
+				</thead>
+				<tbody>
+					<tr>
+						<td> 1 </td>
+						<td> Desenvolvimento de Sistemas SA01 </td>
+						<td> <button type="submit" class="btn-excluir"> Excluir </button>
+							<button type="submit" class="btn-visualizar"> Visualizar </button>
+						</td>
+					</tr>
+					<tr>
+						<td> 2 </td>
+						<td> Redes de Computadores SN02 </td>
+						<td> <button type="submit" class="btn-excluir"> Excluir </button>
+							<button type="submit" class="btn-visualizar"> Visualizar </button>
+						</td>
+					</tr>
+					<tr>
+						<td> 3 </td>
+						<td> Desenvolvimento de Sistemas B402 </td>
+						<td> <button type="submit" class="btn-excluir"> Excluir </button>
+							<button type="submit" class="btn-visualizar"> Visualizar </button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- css -->
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+		* {
+			font-family: 'Montserrat', sans-serif;
+			margin: 0;
+		}
+
+		body {
+			background-color: #bfbfbf;
+		}
+
+		nav {
+			width: 100vw;
+			background-color: white;
+			display: flex;
+			justify-content: space-between;
+			height: 60px;
+			align-items: center;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+		}
+
+		nav h3 {
+			margin-left: 50px;
+		}
+
+		.logout-container {
+			display: flex;
+			margin-right: 50px;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.logout-container button {
+			background: none;
+			cursor: pointer;
+			border: none;
+		}
+
+		.logout-container button i {
+			font-size: 18px;
+		}
+
+		.general-container {
+			display: flex;
+			justify-content: center;
+			margin-top: 5rem;
+		}
+
+		.table-container {
+			background-color: white;
+			padding: 50px;
+			border-radius: 30px;
+		}
+
+		.container-cadastro {
+			display: flex;
+			justify-content: space-between;
+			padding-bottom: 2rem;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		thead th,
+		tbody td {
+			border: 1px solid black;
+		}
+
+		th {
+			color: #004A8F;
+		}
+
+		td {
+			padding: 15px;
+		}
+
+		.btn-cadastro,
+		.btn-excluir,
+		.btn-visualizar {
+			padding: 8px;
+			border-radius: 10px;
+			border: none;
+			color: white;
+			cursor: pointer;
+		}
+
+		.btn-cadastro {
+			width: 180px;
+			background-color: #0066ff;
+		}
+
+		.btn-excluir {
+			background-color: #d10404;
+		}
+
+		.btn-visualizar {
+			background-color: #0066ff;
+		}
+
+		.btn-cadastro:hover {
+			background-color: #0250c4;
+		}
+
+		.btn-excluir:hover {
+			background-color: #9c0505;
+		}
+
+		.btn-visualizar:hover {
+			background-color: #0250c4;
+		}
+	</style>
+
+</body>
+
+
+</html>

@@ -1,0 +1,122 @@
+<!Doctype HTML>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<title> Login </title>
+
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+		* {
+			font-family: 'Montserrat', sans-serif;
+		}
+
+		body {
+			background-image: url("fundo.svg");
+			background-size: cover;
+		}
+
+
+		.form-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+
+		.form {
+			background-color: white;
+			border-radius: 40px;
+			width: 24rem;
+			height: 30rem;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+		}
+
+		.login-form {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			justify-content: space-around;
+		}
+
+		h1 {
+			display: flex;
+			justify-content: center;
+			padding-top: 25px;
+			font-size: 40px;
+		}
+
+		.btn-container {
+			display: flex;
+			justify-content: center;
+		}
+
+		.login-form input {
+			padding: 8px;
+			width: 200px;
+			border-radius: 10px;
+			border: 0.5px solid black;
+		}
+
+
+		.login-form label {
+			font-size: 17px;
+			font-weight: 600;
+		}
+
+		.labels {
+			display: flex;
+			flex-direction: column;
+			gap: 25px;
+		}
+
+		.label-login,
+		.label-senha {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.btn-container button {
+			width: 150px;
+			padding: 8px;
+			border-radius: 10px;
+			background-color: black;
+			border: none;
+			color: white;
+			cursor: pointer;
+		}
+
+		.btn-container button:hover {
+			background-color: #4f4f4f;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="form-container">
+		<div class="form">
+			<h1> Cadastro Turma </h1>
+			<form method="POST" class="login-form" action="cadastrar_turma">
+
+				<div class="labels">
+					<div class="label-login">
+						<label> Descrição: </label>
+						<input type="text" name="descricao">
+					</div>
+				</div>
+
+				<div class="btn-container"> <button type="submit"> Enviar </button> </div>
+			</form>
+		</div>
+	</div>
+
+</body>
+
+
+</html>
