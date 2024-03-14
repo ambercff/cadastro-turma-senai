@@ -73,14 +73,65 @@ class MyHandler(SimpleHTTPRequestHandler):
 
         cursor.close()
 
-    def adicionar_turma(self, descricao):
+    def adicionar_turma(self, descricao, id_professor):
         cursor = conexao.cursor()
 
         cursor.execute("INSERT INTO turmas (descricao) VALUES (%s)", (descricao,))
+        cursor.execute("SELECT id_turma FROM turmas WHERE descricao = %s", (descricao,))
+
+        resultado = cursor.fetchone()
+
+        cursor.execute("INSERT INTO turmas_professor (id_turma, id_professor) VALUES (%s, %s)", (resultado[0], id_professor))
 
         conexao.commit()
 
         cursor.close()
+
+    def carrega_turmas_professor(self, login):
+        # Carrega turmas do professor
+
+        cursor = conexao.cursor()
+
+        cursor.execute("SELECT id_professor, nome FROM dados_login WHERE login = %s", (login,))
+
+        resultado = cursor.fetchone()
+
+        cursor.close()
+
+        # Resultaod[0] traz id_professor e resultado[1] trás o nome do professor
+        id_professor = resultado[0]
+
+        cursor = conexao.cursor()
+        cursor.execute(
+            "SELECT turmas.id_turma, turmas.descricao FROM turmas_professor INNER JOIN turmas ON turmas_professor.id_turma = turmas.id_turma WHERE turmas_professor.id_professor = %s", (id_professor,)
+        )
+
+        turmas = cursor.fetchall()
+        cursor.close()
+
+        # Construindo as linhas de tabela com o resultado
+        linhas_tabela = ""
+        for turma in turmas:
+            id_turmas = turma[0]
+            descricao_turma = turma[1]
+            link_atividade = "<a href='tela_atividade'><button style='width: 180px; padding: 8px;border-radius: 10px;background-color: black;border: none;color: white;cursor: pointer;'> Cadastrar atividade <i class='fa-solid fa-plus'></i></button></a>"
+            linha = "<tr><td style='text-align:center; border: 1px solid black; padding: 15px;'>{}</td><td style='text-align:center; border: 1px solid black; padding: 15px;'>{}</td></tr>".format(descricao_turma, link_atividade)
+            linhas_tabela += linha
+
+        with open(os.path.join(os.getcwd(), 'cadastrar_turma.html'), 'r', encoding='utf-8') as cad_turma_file:
+            content = cad_turma_file.read()
+
+            content = content.replace('{nome_professor}', resultado[1])
+            content = content.replace('{id_professor}', str(id_professor))
+            content = content.replace('{login}', str(login))
+
+        content = content.replace('<!-- Tabela com linhas zebradas -->', linhas_tabela)
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/html;charset=utf8")
+        self.end_headers()
+
+        self.wfile.write(content.encode('utf-8'))
 
     def adicionar_atividade(self, descricao):
         cursor = conexao.cursor()
@@ -90,7 +141,8 @@ class MyHandler(SimpleHTTPRequestHandler):
         conexao.commit()
 
         cursor.close()
-    
+
+   
     def do_GET(self):
 
         # Rota login
@@ -124,18 +176,18 @@ class MyHandler(SimpleHTTPRequestHandler):
             # Envia o conteudo modificado para o cliente
             self.wfile.write(content.encode('utf-8')) 
 
-        elif self.path.startswith('/tela_professor'):
-            print("entrou tela professor")
-            self.send_response(200)
-            self.send_header("Content-type", "text/html; charset=utf-8")
-            self.end_headers()
+        # elif self.path.startswith('/tela_professor'):
+        #     print("entrou tela professor")
+        #     self.send_response(200)
+        #     self.send_header("Content-type", "text/html; charset=utf-8")
+        #     self.end_headers()
 
-            with open(os.path.join(os.getcwd(), 'tela_professor.html'), 'r', encoding='utf-8') as file:
-                content = file.read()
+        #     with open(os.path.join(os.getcwd(), 'tela_professor.html'), 'r', encoding='utf-8') as file:
+        #         content = file.read()
 
-            self.wfile.write(content.encode('utf-8'))
+        #     self.wfile.write(content.encode('utf-8'))
             
-            return
+        #     return
         
         elif self.path.startswith('/tela_turma'):
             self.send_response(200)
@@ -236,11 +288,8 @@ class MyHandler(SimpleHTTPRequestHandler):
             # Verificando se o usuário já existe
 
             if self.usuario_existente(login, senha):
-                self.send_response(302)
-                self.send_header('Location', '/tela_professor')
-                self.end_headers()
-
-                return
+                self.carrega_turmas_professor(login)
+                # return
             
             else:
                 # Verifica se o usuário já está cadastrado. Caso não esteja foi caso de login errado
@@ -275,7 +324,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.adicionar_usuario(login, senha, nome)
 
             self.send_response(302)
-            self.send_header("Location", "/tela_professor")
+            self.send_header("Location", "/tela_turma")
             self.end_headers()
             return
 
@@ -288,8 +337,10 @@ class MyHandler(SimpleHTTPRequestHandler):
             form_data = parse_qs(body, keep_blank_values = True)
 
             descricao = form_data.get('descricao', [''])[0]
+            id_professor = form_data.get('id_professor', [''])[0]
+            login = form_data.get('login', [''])[0]
 
-            print(descricao)
+            print(f"Cad_turma, dados: {descricao}, {id_professor}")
 
             if descricao.strip() == '':
                 # Se algum campo estiver vazio, redireciona para a página de cadastro falhado
@@ -304,13 +355,14 @@ class MyHandler(SimpleHTTPRequestHandler):
                 return
             else:
                 # Se os campos estiverem preenchidos, adiciona a turma
-                self.adicionar_turma(descricao)
+                self.adicionar_turma(descricao, id_professor)
+                self.carrega_turmas_professor(login)
 
-                self.send_response(302)
-                self.send_header("Location", "/tela_professor")
-                self.end_headers()
+                # self.send_response(302)
+                # self.send_header("Location", "/tela_turma")
+                # self.end_headers()
 
-                return
+                # return
 
         elif self.path.startswith('/cadastrar_atividade'):
             content_length = int(self.headers['content-length'])
@@ -339,7 +391,7 @@ class MyHandler(SimpleHTTPRequestHandler):
                 self.adicionar_atividade(descricao)
 
                 self.send_response(302)
-                self.send_header("Location", "/tela_professor")
+                self.send_header("Location", "/tela_turma")
                 self.end_headers()
 
                 return
